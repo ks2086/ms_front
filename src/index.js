@@ -1,17 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 
+import { QueryClient, QueryClientProvider } from "react-query";
 import { RouterProvider } from 'react-router-dom';
 import { router } from './common/routing'
 
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
+const queryClient = new QueryClient()
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} /> 
+    <QueryClientProvider client={queryClient} contextSharing={true}>
+      <RouterProvider router={router} /> 
+    </QueryClientProvider>
   </React.StrictMode>
 );
 

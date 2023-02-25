@@ -1,18 +1,35 @@
-import { useLoaderData, Link } from "react-router-dom"
 import React from "react";
+import { Link } from "react-router-dom"
 import { getNewsList } from "../../../common/axiosMethods"
+import { useQuery } from "react-query";
 
 
-export async function loader(){
-    return await getNewsList().then(res => {return res.data});
-}
 
 function NewsListComponent(){
-    
-    const news = useLoaderData()
+
+    const { isLoading, data, isError, error, refetch, isFetching } = useQuery(
+        {
+            queryKey: ['newsList'],
+            queryFn: getNewsList,
+            enabled: true,
+            staleTime: Infinity,
+            retry: false
+        }
+    )
+
+    if(isLoading || isFetching){
+        return <div>Is Loading...</div>
+    }
+
+    if(isError){
+        return <div>Wystapił bład podczas ładowania treści</div>
+    }
+
     return(
+        
         <React.Fragment>
-            <Link to={'/news/add'}>Dodaj nowy wpis</Link>
+        
+          <Link to={'/news/add'}>Dodaj nowy wpis</Link>
             <table>
                 <thead>
                     <tr>
@@ -25,7 +42,7 @@ function NewsListComponent(){
                 </thead>
                 <tbody>
                     {
-                        news.map((item, key) => {
+                        data?.data.map((item, key) => {
                             return(
                                 <tr key={key}>
                                     <td>{item.id}</td>
@@ -38,8 +55,10 @@ function NewsListComponent(){
                         })
                     }
                 </tbody>
-            </table>
+            </table>  
+            
         </React.Fragment>
+    
     )
 
 }

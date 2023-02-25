@@ -1,13 +1,14 @@
 import { createBrowserRouter } from 'react-router-dom';
 
 //  Components
-import LoginComponent from '../components/LoginComponent';
+import LoginComponent from '../components/Auth/LoginFormComponent';
 import ErrorPageComponent from '../components/errorPageComponent';
 import MainComponent from '../components/MainComponent';
 
 import WelcomePageComponent, { loader as WelcomePageLoader } from '../components/WelcomePageComponent';
-import NewsListComponent, { loader as NewsListComponentLoader } from '../components/Modules/News/NewsListComponent';
-import NewsEditComponent, { loader as NewsEditComponentLoader, editAction } from '../components/Modules/News/NewsEditComponent';
+import NewsListComponent from '../components/Modules/News/NewsListComponent';
+import NewsAddFormComponent from '../components/Modules/News/NewsAddFormComponent';
+import NewsEditFormComponent from '../components/Modules/News/NewsEditFormComponent';
 
 export const router = createBrowserRouter(
     [
@@ -17,26 +18,37 @@ export const router = createBrowserRouter(
             errorElement: <ErrorPageComponent />,
             children: [
                 {
-                    path: "/",
+                    index: true,
                     element: <WelcomePageComponent />,
                     loader: WelcomePageLoader
                 },
                 {
                     path: "/news",
-                    element: <NewsListComponent />,
-                    loader: NewsListComponentLoader
+                    children: [
+                        {
+                            index: true,
+                            element: <NewsListComponent />
+                        },
+                        {
+                            path: "add",
+                            element: <NewsAddFormComponent />,
+                        },
+                        {
+                            path: ":id",
+                            element: <NewsEditFormComponent />,
+                        },
+                    ]
                 },
-                {
-                    path: "/news/:id",
-                    element: <NewsEditComponent />,
-                    loader: NewsEditComponentLoader,
-                    action: editAction
-                },
+                
             
             ]
           },
           {
             path: "/login",
+            element: <LoginComponent />
+          },
+          {
+            path: "/logout",
             element: <LoginComponent />
           }
     ]

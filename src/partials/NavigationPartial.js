@@ -1,11 +1,12 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function NavigationPartial(){
 
     return(
         <ul>
-            <li><Link to={'/'}>Strona główna</Link></li>
-            <li><Link to={'/news'}>Aktualności</Link></li>
+            <li><NavLink to={'/'}>Strona główna</NavLink></li>
+            <li><NavLink to={'/news'}>Aktualności</NavLink></li>
+            <li><NavLink to={'/logout'}>Wyloguj</NavLink></li>
         </ul>
     )
 
