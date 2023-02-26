@@ -58,7 +58,6 @@ function LoginFormComponent(){
                     <input type={"submit"} value={"Zaloguj"} />
                 </div>
 
-
             </form>
         </>
     )

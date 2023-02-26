@@ -1,5 +1,4 @@
-import { queries } from "@testing-library/react"
-import { useState, useRef } from "react"
+import { useRef } from "react"
 import { useQuery } from "react-query"
 import { useParams } from "react-router-dom"
 import { getNewsItemById, postNewsUpdateById } from "../../../common/axiosMethods"
@@ -11,6 +10,8 @@ function NewsEditFormComponent(){
 
     let titleRef = useRef("")
     let contentRef = useRef("")
+    let imageRef = useRef("")
+    let imageRefURL = useRef("")
  
 
     const single = useQuery(
@@ -28,15 +29,14 @@ function NewsEditFormComponent(){
             queryKey: ['newsUpdate', id],
             queryFn: () => {
 
-                let title = titleRef.current.value === undefined ? titleRef.current : titleRef.current.value
-                let content = contentRef.current.value === undefined ? contentRef.current : contentRef.current.value
+                let formData = new FormData()
+                formData.append('title', titleRef.current)
+                formData.append('content', contentRef.current)
+                formData.append('image', imageRef.current)
 
                 postNewsUpdateById(
                     id, 
-                    {
-                        title: title,
-                        content: content
-                    }
+                    formData
                 )
                 
             },
@@ -61,11 +61,13 @@ function NewsEditFormComponent(){
     if(single.data !== undefined && single.data.data !== undefined){
         changeInputValue(titleRef, single.data.data.title)
         changeInputValue(contentRef, single.data.data.content)
+        changeInputValue(imageRefURL, single.data.data.image)
     }
 
     if(update.data !== undefined){
         changeInputValue(titleRef, update.data.data.data.title)
         changeInputValue(contentRef, update.data.data.data.content)
+        changeInputValue(imageRefURL, update.data.data.data.image)
     }
 
     const submitForm = (e) => {
@@ -77,12 +79,19 @@ function NewsEditFormComponent(){
         <form onSubmit={(e) => submitForm(e)}>
             <h2>Edytuj wpis</h2>
             <div>
+                <img src={imageRefURL.current} alt="" style={{width: '200px', height: '200px'}} crossOrigin="true" />
+            </div>
+            <div>
                 <label>Podaj tytuł wpisu</label>
-                <input type={"text"} name={"title"} onChange={(e) => changeInputValue(titleRef, e.target.value)} ref={titleRef} defaultValue={titleRef.current}/>
+                <input type={"text"} name={"title"} onChange={(e) => changeInputValue(titleRef, e.target.value)} defaultValue={titleRef.current}/>
             </div>
             <div>
                 <label>Podaj treść wpisu</label>
-                <textarea name={"content"} rows="5" onChange={(e) => changeInputValue(contentRef, e.target.value)} ref={contentRef} defaultValue={contentRef.current}></textarea>
+                <textarea name={"content"} rows="5" onChange={(e) => changeInputValue(contentRef, e.target.value)} defaultValue={contentRef.current}></textarea>
+            </div>
+            <div>
+                <label>Wybierz zdjęcie wpisu</label>
+                <input type={"file"} name={"image"} onChange={(e) => changeInputValue(imageRef, e.target.files[0])} />
             </div>
             <p>
                 <button type="submit">Zapisz</button>
